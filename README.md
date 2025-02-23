@@ -102,8 +102,7 @@ This provides a fully customizable animated wave progress bar that is easy to us
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
-
+This project is licensed under the MIT License. See the [LICENSE](https://github.com/Jocando21/WaveProgress/blob/main/licence) file for more details.
 ## Contact
 
 You can follow me on Twitter: [@Jocando_](https://x.com/Jocando_)
