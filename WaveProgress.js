@@ -1,28 +1,60 @@
 class WaveProgress {
-    constructor(canvasId, options = {}) {
-        this.canvas = document.getElementById(canvasId);
-        this.ctx = this.canvas.getContext("2d");
+    constructor(divClass, options = {}) {
+        this.container = document.querySelector(`.${divClass}`);
+
+        if (!this.container) {
+            console.error("Contenedor no encontrado.");
+            return;
+        }
 
         this.settings = Object.assign({
-            width: window.innerWidth, // Default to full window width
-            height: window.innerHeight, // Default to full window height
+            width: 500,
+            height: 200,
             goalAmount: 100,
             waterColor: ["#00aaff", "#004488"],
+            gradientAngle: 0,
             opacity: 0.8,
             waveHeight: 6,
             waveSpeed: 0.02,
             counterFormat: "percentage",
             stepMode: "continuous",
-            stepDuration: 50
+            stepDuration: 50,
+            outlineColor: "#ffffff",
+            outlineWidth: 2,
+            borderRadius: 16,
+            orientation: "up",
+            inertiaStrength: 0.1
         }, options);
+
+        if (this.settings.orientation === "up" || this.settings.orientation === "down") {
+            this.container.style.width = `${this.settings.height}px`;
+            this.container.style.height = `${this.settings.width}px`;
+            this.container.style.position = `relative`;
+        } else {
+            this.container.style.width = `${this.settings.width}px`;
+            this.container.style.height = `${this.settings.height}px`;
+            this.container.style.position = `relative`;
+        }
+
+        this.canvas = document.createElement("canvas");
+        this.container.appendChild(this.canvas);
 
         this.canvas.width = this.settings.width;
         this.canvas.height = this.settings.height;
 
+        this.canvas.style.position = "absolute";
+        this.canvas.style.top = "50%";
+        this.canvas.style.left = "50%";
+        this.canvas.style.transform = "translate(-50%, -50%)";
+        this.canvas.style.borderRadius = `${this.settings.borderRadius}px`;
+        this.canvas.style.outline = `${this.settings.outlineWidth}px solid ${this.settings.outlineColor}`;
+
+        this.ctx = this.canvas.getContext("2d");
+
         this.percentage = 0;
-        this.xOffset = this.canvas.width * 0.5;
-        this.targetOffset = this.xOffset;
-        this.offsetPrev = this.xOffset;
+        this.xOffset = 0;
+        this.targetOffset = 0;
+        this.offsetPrev = 0;
         this.move = false;
         this.moveCur = 0;
         this.moveDur = 50;
@@ -38,6 +70,9 @@ class WaveProgress {
         this.freq = 0.020;
 
         this.counterElement = document.getElementById("counter");
+
+        this.lastUpdateTime = 0;
+        this.updateInterval = 50;
 
         this.init();
     }
@@ -59,6 +94,10 @@ class WaveProgress {
             step = 1 - Math.pow(1 - step, 3);
             this.xOffset = this.lerp(this.offsetPrev, this.targetOffset, step);
             this.moveCur += 1;
+
+            const inertiaFactor = 1 - Math.pow(1 - this.moveCur / this.moveDur, this.settings.inertiaStrength);
+            this.waveSpdCur = this.waveSpd + inertiaFactor * (this.waveSpd * 1.5 - this.waveSpd);
+
             if (this.xOffset === this.targetOffset) this.move = false;
         }
 
@@ -73,19 +112,25 @@ class WaveProgress {
             x = this.amp * Math.sin(i * this.freq + this.waveCurrent);
             this.ctx.lineTo(this.xOffset + x, i);
         }
+
         this.ctx.clip();
 
-        let gradient = this.ctx.createLinearGradient(0, 0, 0, this.canvas.height);
+        // Usamos el ángulo para determinar la dirección del degradado
+        let gradient = this.ctx.createLinearGradient(0, 0, 
+            this.canvas.width * Math.cos(this.settings.gradientAngle * Math.PI / 180), 
+            this.canvas.height * Math.sin(this.settings.gradientAngle * Math.PI / 180));
+
         gradient.addColorStop(0, this.settings.waterColor[0]);
         gradient.addColorStop(1, this.settings.waterColor[1]);
 
         this.ctx.fillStyle = gradient;
         this.ctx.globalAlpha = this.settings.opacity;
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
         this.ctx.restore();
 
         if (this.move) {
-            this.waveCurrent += this.waveSpd * 1.5;
+            this.waveCurrent += this.waveSpdCur * 1.5;
             this.waveDown = true;
         } else if (this.waveDown) {
             let step = this.waveCur / this.waveDur;
@@ -97,10 +142,16 @@ class WaveProgress {
             this.waveCurrent += this.waveSpd;
         }
 
+        this.rotateCanvas();
+
         window.requestAnimationFrame(() => this.draw());
     }
 
     updateProgress(percentage) {
+        if (performance.now() - this.lastUpdateTime < this.updateInterval) return;
+
+        this.lastUpdateTime = performance.now();
+
         this.percentage = Math.max(0, Math.min(percentage, 100));
 
         const targetPercentage = this.percentage;
@@ -114,7 +165,7 @@ class WaveProgress {
                     currentPercentage = targetPercentage;
                     clearInterval(interval);
                 }
-                this.targetOffset = (currentPercentage / 100) * (this.canvas.width - this.amp) + 8;
+                this.targetOffset = this.calculateTargetOffset(currentPercentage);
                 this.offsetPrev = this.xOffset;
                 this.move = true;
                 this.moveCur = 0;
@@ -133,7 +184,7 @@ class WaveProgress {
                     currentPercentage -= 1;
                 }
 
-                this.targetOffset = (currentPercentage / 100) * (this.canvas.width - this.amp) + 8;
+                this.targetOffset = this.calculateTargetOffset(currentPercentage);
                 this.offsetPrev = this.xOffset;
                 this.move = true;
                 this.moveCur = 0;
@@ -151,6 +202,10 @@ class WaveProgress {
         }
     }
 
+    calculateTargetOffset(percentage) {
+        return ((percentage / 100) * (this.canvas.width + 16)) - 8;
+    }
+
     changeProgress(amount) {
         this.updateProgress(this.percentage + amount);
     }
@@ -161,5 +216,22 @@ class WaveProgress {
 
     lerp(a, b, t) {
         return a + t * (b - a);
+    }
+
+    rotateCanvas() {
+        switch (this.settings.orientation) {
+            case "right":
+                this.canvas.style.transform = "translate(-50%, -50%) rotate(0deg)";
+                break;
+            case "left":
+                this.canvas.style.transform = "translate(-50%, -50%) rotate(180deg)";
+                break;
+            case "up":
+                this.canvas.style.transform = "translate(-50%, -50%) rotate(90deg)";
+                break;
+            case "down":
+                this.canvas.style.transform = "translate(-50%, -50%) rotate(-90deg)";
+                break;
+        }
     }
 }
