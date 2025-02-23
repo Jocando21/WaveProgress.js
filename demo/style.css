@@ -1,0 +1,32 @@
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: #111;
+    color: white;
+    font-family: Arial, sans-serif;
+}
+canvas {
+    border: 2px solid white;
+    display: block;
+    transition: clip-path 0.5s ease-in-out;
+}
+.controls {
+    margin-top: 10px;
+    display: flex;
+    gap: 10px;
+}
+button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 5px;
+}
+button:hover {
+    background-color: #0056b3;
+}
