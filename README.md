@@ -1,7 +1,7 @@
-# **WaveProgress.js**  
+# **WaveProgress.js**
 
 ## **Description**  
-`WaveProgress.js` is a modular library for creating progress bars with a liquid wave effect in a `<canvas>`. It offers customization options like colors, wave height, speed, and opacity, allowing you to create smooth and dynamic liquid-like progress indicators.
+`WaveProgress.js` is a modular library for creating progress bars with a liquid wave effect in a `<canvas>`. It offers customization options like colors, wave height, speed, opacity, outline, border radius, gradient direction, and more, allowing you to create smooth and dynamic liquid-like progress indicators.
 
 ---
 [DEMO PAGE](https://jocando21.github.io/WaveProgress/)
@@ -18,26 +18,34 @@ Add `waveProgress.js` to your project:
 ```
 **CDN**
 ```html
-<script src="https://cdn.jsdelivr.net/gh/Jocando21/WaveProgress@main/WaveProgress.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/Jocando21/WaveProgress@latest/WaveProgress.js"></script>
 ```
 
-### **2. Add a `<canvas>` in the HTML**  
+### **2. Add a `<div>` in the HTML**  
 ```html
-<canvas id="myCanvas"></canvas>
+<div class="mybar"></div>
 <p id="counter">0%</p>
 ```
 
 ### **3. Initialize the progress bar**  
 ```javascript
-const progressBar = new WaveProgress("myCanvas", {
-    width: 300,
-    height: 100,
+const window.progressBar = new WaveProgress("mybar", {
+    width: 600,
+    height: 32,
     goalAmount: 100,
-    waterColor: ["#00aaff", "#004488"],
+    waterColor: ["#7549BC", "#5E2C8F", "#7549BC"],
+    gradientAngle: 90,
     opacity: 0.8,
     waveHeight: 6,
     waveSpeed: 0.02,
-    counterFormat: "percentage"
+    counterFormat: "percentage",
+    stepMode: "continuous",
+    stepDuration: 50,
+    outlineColor: "#ffffff",
+    outlineWidth: 2,
+    borderRadius: 16,
+    orientation: "right",
+    inertiaStrength: 0.1
 });
 ```
 
@@ -45,16 +53,22 @@ const progressBar = new WaveProgress("myCanvas", {
 
 ## **Customization Options**  
 
-| Option         | Type    | Description |
-|---------------|--------|-------------|
-| `width`       | `Number` | Canvas width. |
-| `height`      | `Number` | Canvas height. |
-| `goalAmount`  | `Number` | Target progress value (e.g., 100). |
-| `waterColor`  | `Array`  | Wave colors in `["#color1", "#color2"]` format. |
-| `opacity`     | `Number` | Wave opacity (0 to 1). |
-| `waveHeight`  | `Number` | Wave height in pixels. |
-| `waveSpeed`   | `Number` | Wave animation speed. |
+| Option          | Type    | Description |
+|-----------------|---------|-------------|
+| `width`         | `Number` | Canvas width. |
+| `height`        | `Number` | Canvas height. |
+| `goalAmount`    | `Number` | Target progress value (e.g., 100). |
+| `waterColor`    | `Array`  | Wave colors in `["#color1", "#color2"]` format. |
+| `opacity`       | `Number` | Wave opacity (0 to 1). |
+| `waveHeight`    | `Number` | Wave height in pixels. |
+| `waveSpeed`     | `Number` | Wave animation speed. |
 | `counterFormat` | `String` | Counter format (currently only `"percentage"`). |
+| `outlineColor`  | `String` | Outline color (default: `"#ffffff"`). |
+| `outlineWidth`  | `Number` | Outline width in pixels (default: `2`). |
+| `borderRadius`  | `Number` | Border radius in pixels (default: `16`). |
+| `gradientAngle` | `Number` | Angle for the gradient (in degrees, default: `0`). |
+| `orientation`   | `String` | Direction of the progress (can be `"up"`, `"down"`, `"left"`, `"right"`). |
+| `inertiaStrength` | `Number` | Strength of the inertia effect (default: `0.1`). |
 
 ---
 
@@ -80,80 +94,6 @@ Resets progress to 0%.
 
 ```javascript
 progressBar.resetProgress();
-```
-
----
-
-## **Complete Example**  
-
-```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wave Progress Bar</title>
-    <script src="waveProgress.js" defer></script>
-    <style>
-        body {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            background-color: #111;
-            color: white;
-            font-family: Arial, sans-serif;
-        }
-        canvas {
-            border: 2px solid white;
-            display: block;
-            transition: clip-path 0.5s ease-in-out;
-        }
-        .controls {
-            margin-top: 10px;
-            display: flex;
-            gap: 10px;
-        }
-        button {
-            background-color: #007bff;
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            cursor: pointer;
-            font-size: 16px;
-            border-radius: 5px;
-        }
-        button:hover {
-            background-color: #0056b3;
-        }
-    </style>
-</head>
-<body>
-
-    <canvas id="myCanvas"></canvas>
-    <p id="counter">0%</p>
-    <div class="controls">
-        <button onclick="progressBar.changeProgress(-10)">-10%</button>
-        <button onclick="progressBar.changeProgress(10)">+10%</button>
-        <button onclick="progressBar.resetProgress()">Reset</button>
-    </div>
-
-    <script>
-        const progressBar = new WaveProgress("myCanvas", {
-            width: 300,
-            height: 100,
-            goalAmount: 100,
-            waterColor: ["#00aaff", "#004488"],
-            opacity: 0.8,
-            waveHeight: 6,
-            waveSpeed: 0.02,
-            counterFormat: "percentage"
-        });
-    </script>
-
-</body>
-</html>
 ```
 
 ---
