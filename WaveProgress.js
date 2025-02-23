@@ -101,22 +101,37 @@ class WaveProgress {
     updateProgress(percentage) {
         this.percentage = Math.max(0, Math.min(percentage, 100));
 
-        if (this.percentage === 0) {
+        const targetPercentage = this.percentage;
+        let currentPercentage = parseFloat(this.counterElement ? this.counterElement.textContent : "0");
+
+        if (this.percentage < 1) {
+            this.canvas.style.clipPath = "inset(0 0 100% 0)";
+        } else if (this.percentage === 0) {
             this.canvas.style.clipPath = "inset(100% 0 0 0)";
         } else {
             this.canvas.style.clipPath = "inset(0 0 0 0)";
         }
 
-        this.targetOffset = (this.percentage / 100) * (this.canvas.width - this.amp) + 8;
-        this.offsetPrev = this.xOffset;
-        this.move = true;
-        this.moveCur = 0;
-        this.waveCur = 0;
-        this.waveDown = false;
+        const increment = targetPercentage > currentPercentage ? 1 : -1;
+        const interval = setInterval(() => {
+            currentPercentage += increment;
 
-        if (this.counterElement) {
-            this.counterElement.textContent = this.percentage + "%";
-        }
+            if ((increment > 0 && currentPercentage >= targetPercentage) || (increment < 0 && currentPercentage <= targetPercentage)) {
+                currentPercentage = targetPercentage;
+                clearInterval(interval);
+            }
+
+            this.targetOffset = (currentPercentage / 100) * (this.canvas.width - this.amp) + 8;
+            this.offsetPrev = this.xOffset;
+            this.move = true;
+            this.moveCur = 0;
+            this.waveCur = 0;
+            this.waveDown = false;
+
+            if (this.counterElement) {
+                this.counterElement.textContent = Math.round(currentPercentage) + "%";
+            }
+        }, 30);
     }
 
     changeProgress(amount) {
