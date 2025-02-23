@@ -104,12 +104,6 @@ class WaveProgress {
         const targetPercentage = this.percentage;
         let currentPercentage = parseFloat(this.counterElement ? this.counterElement.textContent : "0");
 
-        if (this.percentage < 1) {
-            this.canvas.style.clipPath = "inset(0 0 100% 0)";
-        } else {
-            this.canvas.style.clipPath = "inset(0 0 0 0)";
-        }
-
         const increment = targetPercentage > currentPercentage ? 1 : -1;
         const interval = setInterval(() => {
             currentPercentage += increment;
