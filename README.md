@@ -18,7 +18,7 @@ Add `waveProgress.js` to your project:
 ```
 **CDN**
 ```html
-<script src="https://cdn.jsdelivr.net/gh/Jocando21/WaveProgress@main/WaveProgress.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/Jocando21/WaveProgress@v1.0.0/WaveProgress.js"></script>
 ```
 
 ### **2. Add a `<div>` in the HTML**  
