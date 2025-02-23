@@ -18,18 +18,18 @@ Add `waveProgress.js` to your project:
 ```
 **CDN**
 ```html
-<script src="https://cdn.jsdelivr.net/gh/Jocando21/WaveProgress@latest/WaveProgress.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/Jocando21/WaveProgress@main/WaveProgress.js"></script>
 ```
 
 ### **2. Add a `<div>` in the HTML**  
 ```html
-<div class="mybar"></div>
+<div class="bar"></div>
 <p id="counter">0%</p>
 ```
 
 ### **3. Initialize the progress bar**  
 ```javascript
-const window.progressBar = new WaveProgress("mybar", {
+const window.progressBar = new WaveProgress("bar", {
     width: 600,
     height: 32,
     goalAmount: 100,
