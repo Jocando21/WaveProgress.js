@@ -4,6 +4,8 @@
 `WaveProgress.js` is a modular library for creating progress bars with a liquid wave effect in a `<canvas>`. It offers customization options like colors, wave height, speed, and opacity, allowing you to create smooth and dynamic liquid-like progress indicators.
 
 ---
+[DEMO PAGE](https://jocando21.github.io/WaveProgress/)
+---
 
 ## **Usage**  
 
