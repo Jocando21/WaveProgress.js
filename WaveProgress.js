@@ -106,8 +106,6 @@ class WaveProgress {
 
         if (this.percentage < 1) {
             this.canvas.style.clipPath = "inset(0 0 100% 0)";
-        } else if (this.percentage === 0) {
-            this.canvas.style.clipPath = "inset(100% 0 0 0)";
         } else {
             this.canvas.style.clipPath = "inset(0 0 0 0)";
         }
