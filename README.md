@@ -12,8 +12,13 @@
 ### **1. Include the script**  
 Add `waveProgress.js` to your project:  
 
+**FILE**
 ```html
 <script src="waveProgress.js"></script>
+```
+**CDN**
+```html
+<script src="https://cdn.jsdelivr.net/gh/Jocando21/WaveProgress@main/WaveProgress.js"></script>
 ```
 
 ### **2. Add a `<canvas>` in the HTML**  
