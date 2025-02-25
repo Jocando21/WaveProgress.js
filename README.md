@@ -42,8 +42,6 @@ window.progressBar = new WaveProgress("bar", {
     waveHeight: 6,
     waveSpeed: 0.02,
     counterFormat: "percentage",
-    stepMode: "continuous",
-    stepDuration: 50,
     outlineColor: "#ffffff",
     outlineWidth: 2,
     borderRadius: 16,
@@ -54,23 +52,23 @@ window.progressBar = new WaveProgress("bar", {
 
 ---
 
-## **Customization Options**  
+## **Customization Options**   
 
 | Option          | Type    | Description |
 |-----------------|---------|-------------|
-| `width`         | `Number` | Canvas width. |
-| `height`        | `Number` | Canvas height. |
-| `goalAmount`    | `Number` | Target progress value (e.g., 100). |
-| `waterColor`    | `Array`  | Wave colors in `["#color1", "#color2"]` format. |
-| `opacity`       | `Number` | Wave opacity (0 to 1). |
-| `waveHeight`    | `Number` | Wave height in pixels. |
-| `waveSpeed`     | `Number` | Wave animation speed. |
+| `width`         | `Number` | Canvas width (default: `600`). |
+| `height`        | `Number` | Canvas height (default: `32`). |
+| `goalAmount`    | `Number` | Target progress value (default: `100`). |
+| `waterColor`    | `Array`  | Wave colors in `["#color1", "#color2", "#color3"]` format (default: `["#7549BC", "#5E2C8F", "#7549BC"]`). |
+| `gradientAngle` | `Number` | Angle for the gradient (in degrees, default: `90`). |
+| `opacity`       | `Number` | Wave opacity (0 to 1, default: `0.8`). |
+| `waveHeight`    | `Number` | Wave height in pixels (default: `6`). |
+| `waveSpeed`     | `Number` | Wave animation speed (default: `0.02`). |
 | `counterFormat` | `String` | Counter format (currently only `"percentage"`). |
 | `outlineColor`  | `String` | Outline color (default: `"#ffffff"`). |
 | `outlineWidth`  | `Number` | Outline width in pixels (default: `2`). |
 | `borderRadius`  | `Number` | Border radius in pixels (default: `16`). |
-| `gradientAngle` | `Number` | Angle for the gradient (in degrees, default: `0`). |
-| `orientation`   | `String` | Direction of the progress (can be `"up"`, `"down"`, `"left"`, `"right"`). |
+| `orientation`   | `String` | Direction of the progress (`"up"`, `"down"`, `"left"`, `"right"`, default: `"right"`). |
 | `inertiaStrength` | `Number` | Strength of the inertia effect (default: `0.1`). |
 
 ---

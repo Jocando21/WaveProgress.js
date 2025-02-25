@@ -18,7 +18,6 @@ class WaveProgress {
             waveSpeed: 0.02,
             counterFormat: "percentage",
             stepMode: "continuous",
-            stepDuration: 50,
             outlineColor: "#ffffff",
             outlineWidth: 2,
             borderRadius: 16,
@@ -29,12 +28,12 @@ class WaveProgress {
         if (this.settings.orientation === "up" || this.settings.orientation === "down") {
             this.container.style.width = `${this.settings.height}px`;
             this.container.style.height = `${this.settings.width}px`;
-            this.container.style.position = `relative`;
         } else {
             this.container.style.width = `${this.settings.width}px`;
             this.container.style.height = `${this.settings.height}px`;
-            this.container.style.position = `relative`;
         }
+
+        this.container.style.position = `relative`;
 
         this.canvas = document.createElement("canvas");
         this.container.appendChild(this.canvas);
@@ -115,10 +114,11 @@ class WaveProgress {
 
         this.ctx.clip();
 
-        // Usamos el ángulo para determinar la dirección del degradado
-        let gradient = this.ctx.createLinearGradient(0, 0, 
+        let gradient = this.ctx.createLinearGradient(
+            0, 0, 
             this.canvas.width * Math.cos(this.settings.gradientAngle * Math.PI / 180), 
-            this.canvas.height * Math.sin(this.settings.gradientAngle * Math.PI / 180));
+            this.canvas.height * Math.sin(this.settings.gradientAngle * Math.PI / 180)
+        );
 
         gradient.addColorStop(0, this.settings.waterColor[0]);
         gradient.addColorStop(1, this.settings.waterColor[1]);
@@ -147,59 +147,39 @@ class WaveProgress {
         window.requestAnimationFrame(() => this.draw());
     }
 
-    updateProgress(percentage) {
+    updateProgress(newPercentage) {
         if (performance.now() - this.lastUpdateTime < this.updateInterval) return;
 
         this.lastUpdateTime = performance.now();
 
-        this.percentage = Math.max(0, Math.min(percentage, 100));
+        let currentPercentage = this.percentage;
+        newPercentage = Math.max(0, Math.min(newPercentage, 100));
 
-        const targetPercentage = this.percentage;
-        let currentPercentage = parseFloat(this.counterElement ? this.counterElement.textContent : "0");
+        if (newPercentage <= currentPercentage) return;
 
-        if (this.settings.stepMode === "continuous") {
-            const increment = (targetPercentage - currentPercentage) / 10;
-            const interval = setInterval(() => {
-                currentPercentage += increment;
-                if (currentPercentage >= targetPercentage) {
-                    currentPercentage = targetPercentage;
-                    clearInterval(interval);
-                }
-                this.targetOffset = this.calculateTargetOffset(currentPercentage);
-                this.offsetPrev = this.xOffset;
-                this.move = true;
-                this.moveCur = 0;
-                this.waveCur = 0;
-                this.waveDown = false;
+        const difference = newPercentage - currentPercentage;
+        let increment = Math.max(1, Math.ceil(difference / 10));
 
-                if (this.settings.counterFormat === "percentage" && this.counterElement && this.settings.counterFormat !== "none") {
-                    this.counterElement.textContent = Math.round(currentPercentage) + "%";
-                }
-            }, this.settings.stepDuration);
-        } else if (this.settings.stepMode === "step") {
-            const interval = setInterval(() => {
-                if (currentPercentage < targetPercentage) {
-                    currentPercentage += 1;
-                } else if (currentPercentage > targetPercentage) {
-                    currentPercentage -= 1;
-                }
+        const interval = setInterval(() => {
+            currentPercentage += increment;
 
-                this.targetOffset = this.calculateTargetOffset(currentPercentage);
-                this.offsetPrev = this.xOffset;
-                this.move = true;
-                this.moveCur = 0;
-                this.waveCur = 0;
-                this.waveDown = false;
+            if (currentPercentage >= newPercentage) {
+                currentPercentage = newPercentage;
+                clearInterval(interval);
+            }
 
-                if (this.settings.counterFormat === "percentage" && this.counterElement && this.settings.counterFormat !== "none") {
-                    this.counterElement.textContent = Math.round(currentPercentage) + "%";
-                }
+            this.percentage = currentPercentage;
+            this.targetOffset = this.calculateTargetOffset(currentPercentage);
+            this.offsetPrev = this.xOffset;
+            this.move = true;
+            this.moveCur = 0;
+            this.waveCur = 0;
+            this.waveDown = false;
 
-                if (currentPercentage === targetPercentage) {
-                    clearInterval(interval);
-                }
-            }, this.settings.stepDuration);
-        }
+            if (this.settings.counterFormat === "percentage" && this.counterElement && this.settings.counterFormat !== "none") {
+                this.counterElement.textContent = Math.round(currentPercentage) + "%";
+            }
+        }, this.settings.stepDuration);
     }
 
     calculateTargetOffset(percentage) {
@@ -207,7 +187,7 @@ class WaveProgress {
     }
 
     changeProgress(amount) {
-        this.updateProgress(this.percentage + amount);
+        this.updateProgress(Math.min(100, Math.max(0, this.percentage + amount)));
     }
 
     resetProgress() {
