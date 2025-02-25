@@ -32,7 +32,7 @@ Add `waveProgress.js` to your project:
 
 ### **3. Initialize the progress bar**  
 ```javascript
-const window.progressBar = new WaveProgress("bar", {
+window.progressBar = new WaveProgress("bar", {
     width: 600,
     height: 32,
     goalAmount: 100,
